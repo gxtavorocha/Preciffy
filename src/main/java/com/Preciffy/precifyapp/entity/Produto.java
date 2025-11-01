@@ -29,31 +29,10 @@ public class Produto {
     @Column(nullable = false,precision = 12,scale = 4)
     private BigDecimal precoDeCusto;
 
-    @Column(nullable = false,precision = 5,scale = 4)
-    private BigDecimal taxaDaMaquina;
-
-   @Column(nullable = false,precision = 5,scale = 4)
-    private BigDecimal taxaDaPlataformaOnline;
-
-    @Column(nullable = false,precision = 12,scale = 4)
-    private BigDecimal embalemPersonalizada;
-
-    @Column(nullable = false,precision = 12,scale = 4)
-    private BigDecimal embalagemDeEnvios;
-
-    @Column(nullable = false,precision = 12,scale = 4)
-    private BigDecimal impostosDeImportacao;
-
-    @Column(nullable = false,precision = 12,scale = 4)
-    private  BigDecimal custosComFretes;
 
    @Column(nullable = false,precision = 5,scale = 4)
    private BigDecimal margemDesejada;
 
-   @Column(nullable = false,precision = 12,scale = 4)
-   private BigDecimal precoDeVendaSugerido;
 
-    @Column(nullable = false, precision = 12,scale = 4)
-    private BigDecimal lucroBruto;
 
 }

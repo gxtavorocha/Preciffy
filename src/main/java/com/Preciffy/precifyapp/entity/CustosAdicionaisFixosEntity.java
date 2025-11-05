@@ -1,20 +1,29 @@
 package com.Preciffy.precifyapp.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "custos")
-public class CustosAdicionais extends Produto{
+@Table(name = "custos_adicionais_pre_definidos")
+public class CustosAdicionaisFixosEntity implements Serializable {
+
+    private static final long serialVersionUID =1L;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @OneToOne
+    @JoinColumn(name = "produto_id",nullable = false)
+    private ProdutoEntity produtoEntity;
 
     @Column(nullable = false,precision = 5,scale = 4)
     private BigDecimal taxaDaMaquina;

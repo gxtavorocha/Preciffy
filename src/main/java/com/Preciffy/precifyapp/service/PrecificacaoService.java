@@ -1,51 +1,69 @@
 package com.Preciffy.precifyapp.service;
 
-import com.Preciffy.precifyapp.entity.CustosAdicionaisFixosEntity;
 import com.Preciffy.precifyapp.entity.CustosAdicionaisManuaisEntity;
+import com.Preciffy.precifyapp.entity.PrecificacaoEntity;
 import com.Preciffy.precifyapp.entity.ProdutoEntity;
-import com.Preciffy.precifyapp.repository.CustosAdicionaisFixosRepository;
-import com.Preciffy.precifyapp.repository.CustosAdicionaisManuaisRepository;
-import com.Preciffy.precifyapp.repository.PrecificacaoRepository;
-import com.Preciffy.precifyapp.repository.ProdutoRepository;
-import jakarta.transaction.Transactional;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.List;
 
 @Service
+public class PrecificacaoService {
 
-public class PrecificacaoService{
-
+    // Metodo para calcular o custo total
     public BigDecimal calcularCustoTotal(ProdutoEntity produto) {
         BigDecimal precoCusto = produto.getPrecoDeCusto();
-        BigDecimal custoEmbalagens = produto.getCustosAdicionaisFixosEntity();
-        BigDecimal custoImpostos = produto.getCustosAdicionaisManuaisEntity();
-        BigDecimal frete = produto.getCustosFixos().getFrete();
-        BigDecimal outrosCustos = produto.getCustosManuais().getOutrosCustos();
+        BigDecimal custoEmbalagensPersonalizadas = produto.getCustosAdicionaisFixosEntity().getEmbalemPersonalizada();
+        BigDecimal custosEmbalagensDeEnvio = produto.getCustosAdicionaisFixosEntity().getEmbalagemDeEnvios();
+        BigDecimal custoImpostos = produto.getCustosAdicionaisFixosEntity().getImpostosDeImportacao();
+        BigDecimal frete = produto.getCustosAdicionaisFixosEntity().getCustosComFretes();
+        List<CustosAdicionaisManuaisEntity> outrosCustos = produto.getCustosAdicionaisManuaisEntity();
 
-        BigDecimal taxaMaquina = produto.getCustosFixos().getTaxaMaquina().divide(BigDecimal.valueOf(100));
-        BigDecimal taxaSite = produto.getCustosFixos().getTaxaSite().divide(BigDecimal.valueOf(100));
+        BigDecimal taxaMaquina = produto.getCustosAdicionaisFixosEntity().getTaxaDaMaquina()
+                .divide(BigDecimal.valueOf(100), 4, RoundingMode.HALF_UP);
 
-        // soma dos custos diretos
+        BigDecimal taxaSite = produto.getCustosAdicionaisFixosEntity().getTaxaDaPlataformaOnline()
+                .divide(BigDecimal.valueOf(100), 4, RoundingMode.HALF_UP);
+
+        BigDecimal somaDosOutrosCustos = outrosCustos.stream()
+                .map(CustosAdicionaisManuaisEntity::getValorDoCusto)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
         BigDecimal custoBase = precoCusto
-                .add(custoEmbalagens)
+                .add(custoEmbalagensPersonalizadas)
+                .add(custosEmbalagensDeEnvio)
                 .add(custoImpostos)
                 .add(frete)
-                .add(outrosCustos);
+                .add(somaDosOutrosCustos);
 
-        // aplica as taxas percentuais
         BigDecimal totalComTaxas = custoBase
                 .add(custoBase.multiply(taxaMaquina))
                 .add(custoBase.multiply(taxaSite));
 
-        return totalComTaxas;
+        return totalComTaxas.setScale(2, RoundingMode.HALF_UP);
     }
 
+    // Metodo de calcular preço final usando a margem da precificação
+    public BigDecimal calcularPrecoFinalDoProduto(ProdutoEntity produto, PrecificacaoEntity precificacao) {
 
+        if (precificacao == null || precificacao.getMargemDesejada() == null) {
+            throw new RuntimeException("Margem desejada não definida na precificação.");
+        }
+
+        // Converte a margem (%) em decimal
+        BigDecimal margem = precificacao.getMargemDesejada()
+                .divide(BigDecimal.valueOf(100), 4, RoundingMode.HALF_UP);
+
+        // Calcula o custo total do produto
+        BigDecimal custoTotal = calcularCustoTotal(produto);
+
+        // Fórmula: Preço Final = custoTotal / (1 - margem)
+        BigDecimal divisor = BigDecimal.ONE.subtract(margem);
+
+        return custoTotal.divide(divisor, 2, RoundingMode.HALF_UP);
     }
-
 }
+
+

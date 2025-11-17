@@ -31,4 +31,5 @@ public class CustosAdicionaisManuaisEntity  implements Serializable {
     @JoinColumn(name = "precificacao_id", nullable = false)
     private PrecificacaoEntity precificacaoEntity;
 
+
 }

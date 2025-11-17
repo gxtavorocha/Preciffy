@@ -42,5 +42,7 @@ public class CustosAdicionaisManuaisService {
            custosAdicionaisManuaisRepository.delete(custosAdicionaisManuais);
 }
 
-
+    public List<CustosAdicionaisManuaisEntity> listarTodosOsCustos(){
+        return custosAdicionaisManuaisRepository.findAll();
+    }
 }

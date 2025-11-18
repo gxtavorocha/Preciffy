@@ -5,6 +5,7 @@ import com.Preciffy.precifyapp.entity.CustosAdicionaisManuaisEntity;
 import com.Preciffy.precifyapp.repository.CustosAdicionaisFixosRepository;
 import com.Preciffy.precifyapp.repository.CustosAdicionaisManuaisRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -14,6 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CustosAdicionaisFixosService {
 
+    @Autowired
     private final CustosAdicionaisFixosRepository repository;
 
     //Salva Custos inseridos pelo usuario

@@ -33,7 +33,6 @@ public class ProdutoEntity  implements Serializable {
     @Column(nullable = false, unique = true,name = "preco_de_custo")
     private BigDecimal precoDeCusto;
 
-
     @OneToOne(mappedBy = "produto", cascade = CascadeType.ALL, orphanRemoval = true)
     private CustosAdicionaisFixosEntity custosAdicionaisFixosEntity;
 
@@ -42,5 +41,6 @@ public class ProdutoEntity  implements Serializable {
 
     @OneToMany(mappedBy = "produto", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PrecificacaoEntity> historicoPrecificacaoEntity = new ArrayList<>();
+
 
 }

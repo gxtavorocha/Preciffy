@@ -13,7 +13,7 @@ import java.util.List;
 public class ProdutoService {
 
 
-
+    @Autowired
     private final ProdutoRepository produtoRepository;
 
 

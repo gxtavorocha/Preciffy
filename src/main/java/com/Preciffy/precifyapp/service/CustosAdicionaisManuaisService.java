@@ -6,6 +6,7 @@ import com.Preciffy.precifyapp.entity.ProdutoEntity;
 import com.Preciffy.precifyapp.repository.CustosAdicionaisManuaisRepository;
 import com.Preciffy.precifyapp.repository.ProdutoRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class CustosAdicionaisManuaisService {
-
+    @Autowired
     private final CustosAdicionaisManuaisRepository custosAdicionaisManuaisRepository;
 
 
@@ -23,7 +24,7 @@ public class CustosAdicionaisManuaisService {
             throw new IllegalArgumentException("O nome do custo não pode ser nulo ou vazio.");
         }
 
-        // 2. Validação do Preço (Não pode ser nulo e deve ser positivo)
+        // 2. Validação do Preço (Não pode ser nulo e deve ser > que 0)
         if (custoManualInserido.getValorDoCusto() == null || custoManualInserido.getValorDoCusto().equals(0)) {
             throw new IllegalArgumentException("O preço do custo  deve ser informado e ser maior que zero.");
         }

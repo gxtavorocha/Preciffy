@@ -17,7 +17,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "precificacoes")
+@Table(name = "precificacao")
 public class PrecificacaoEntity  implements Serializable {
     private static final long serialVersionUID =1L;
 
@@ -35,7 +35,6 @@ public class PrecificacaoEntity  implements Serializable {
 
     @OneToMany(mappedBy = "precificacao", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CustosAdicionaisManuaisEntity> custosManuais = new ArrayList<>();
-
 
     @Column(nullable = false, precision = 12, scale = 4)
     private BigDecimal custoTotalConsolidado;

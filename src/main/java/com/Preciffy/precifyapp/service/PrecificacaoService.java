@@ -3,6 +3,10 @@ package com.Preciffy.precifyapp.service;
 import com.Preciffy.precifyapp.entity.CustosAdicionaisManuaisEntity;
 import com.Preciffy.precifyapp.entity.PrecificacaoEntity;
 import com.Preciffy.precifyapp.entity.ProdutoEntity;
+import com.Preciffy.precifyapp.repository.CustosAdicionaisFixosRepository;
+import com.Preciffy.precifyapp.repository.PrecificacaoRepository;
+import com.Preciffy.precifyapp.repository.ProdutoRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -11,6 +15,16 @@ import java.util.List;
 
 @Service
 public class PrecificacaoService {
+
+    @Autowired
+    private PrecificacaoRepository precificacaoRepository;
+
+    @Autowired
+    private ProdutoRepository produtoRepository;
+
+    @Autowired
+    private CustosAdicionaisFixosRepository custosFixosRepository;
+
 
     // Metodo para calcular o custo total
     public BigDecimal calcularCustoTotal(ProdutoEntity produto) {

@@ -33,7 +33,7 @@ public class PrecificacaoEntity  implements Serializable {
     @JoinColumn(name = "custos_id", nullable = false)
     private CustosAdicionaisFixosEntity custosAdicionaisFixosEntity;
 
-    @OneToMany(mappedBy = "precificacao", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "precificacaoEntity", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CustosAdicionaisManuaisEntity> custosManuais = new ArrayList<>();
 
     @Column(nullable = false, precision = 12, scale = 4)

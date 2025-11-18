@@ -43,10 +43,14 @@ public class ProdutoService {
         ProdutoEntity produto = produtoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Produto não encontrado"));
 
+        produto.setSKU(novosDados.getSKU());
         produto.setNome(novosDados.getNome());
         produto.setPrecoDeCusto(novosDados.getPrecoDeCusto());
+        produto.setCategoria((novosDados.getCategoria()));
 
         return produtoRepository.save(produto);
 
     }
+
+
 }

@@ -23,7 +23,7 @@ public class CustosAdicionaisFixosEntity implements Serializable {
 
     @OneToOne
     @JoinColumn(name = "produto_id",nullable = false)
-    private ProdutoEntity produtoEntity;
+    private ProdutoEntity produto;
 
     @Column(nullable = false,precision = 5,scale = 4)
     private BigDecimal taxaDaMaquina;

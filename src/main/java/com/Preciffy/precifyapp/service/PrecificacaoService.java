@@ -26,25 +26,37 @@ public class PrecificacaoService {
     private CustosAdicionaisFixosRepository custosFixosRepository;
 
 
-    // Metodo para calcular o custo total
-    public BigDecimal calcularCustoTotal(ProdutoEntity produto) {
+    /**
+     * Método para calcular o custo total.
+     * Agora ele requer a PrecificacaoEntity para acessar os custos associados.
+     */
+    public BigDecimal calcularCustoTotal(ProdutoEntity produto, PrecificacaoEntity precificacao) {
+
+        // Custo Base (do Produto)
         BigDecimal precoCusto = produto.getPrecoDeCusto();
-        BigDecimal custoEmbalagensPersonalizadas = produto.getCustosAdicionaisFixosEntity().getEmbalemPersonalizada();
-        BigDecimal custosEmbalagensDeEnvio = produto.getCustosAdicionaisFixosEntity().getEmbalagemDeEnvios();
-        BigDecimal custoImpostos = produto.getCustosAdicionaisFixosEntity().getImpostosDeImportacao();
-        BigDecimal frete = produto.getCustosAdicionaisFixosEntity().getCustosComFretes();
-        List<CustosAdicionaisManuaisEntity> outrosCustos = produto.getCustosAdicionaisManuaisEntity();
 
-        BigDecimal taxaMaquina = produto.getCustosAdicionaisFixosEntity().getTaxaDaMaquina()
+        // Custos Fixos Adicionais (agora acessados via PrecificacaoEntity)
+        BigDecimal custoEmbalagensPersonalizadas = precificacao.getCustosAdicionaisFixosEntity().getEmbalemPersonalizada();
+        BigDecimal custosEmbalagensDeEnvio = precificacao.getCustosAdicionaisFixosEntity().getEmbalagemDeEnvios();
+        BigDecimal custoImpostos = precificacao.getCustosAdicionaisFixosEntity().getImpostosDeImportacao();
+        BigDecimal frete = precificacao.getCustosAdicionaisFixosEntity().getCustosComFretes();
+
+        // Custos Manuais Adicionais (agora acessados via PrecificacaoEntity)
+        List<CustosAdicionaisManuaisEntity> outrosCustos = precificacao.getCustosManuais();
+
+        // Taxas (agora acessadas via PrecificacaoEntity)
+        BigDecimal taxaMaquina = precificacao.getCustosAdicionaisFixosEntity().getTaxaDaMaquina()
                 .divide(BigDecimal.valueOf(100), 4, RoundingMode.HALF_UP);
 
-        BigDecimal taxaSite = produto.getCustosAdicionaisFixosEntity().getTaxaDaPlataformaOnline()
+        BigDecimal taxaSite = precificacao.getCustosAdicionaisFixosEntity().getTaxaDaPlataformaOnline()
                 .divide(BigDecimal.valueOf(100), 4, RoundingMode.HALF_UP);
 
+        // Soma dos custos manuais
         BigDecimal somaDosOutrosCustos = outrosCustos.stream()
                 .map(CustosAdicionaisManuaisEntity::getValorDoCusto)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
+        // Custo que serve de base para o cálculo das taxas
         BigDecimal custoBase = precoCusto
                 .add(custoEmbalagensPersonalizadas)
                 .add(custosEmbalagensDeEnvio)
@@ -52,6 +64,7 @@ public class PrecificacaoService {
                 .add(frete)
                 .add(somaDosOutrosCustos);
 
+        // Custo total final (incluindo as taxas)
         BigDecimal totalComTaxas = custoBase
                 .add(custoBase.multiply(taxaMaquina))
                 .add(custoBase.multiply(taxaSite));
@@ -59,7 +72,10 @@ public class PrecificacaoService {
         return totalComTaxas.setScale(2, RoundingMode.HALF_UP);
     }
 
-    // Metodo de calcular preço final usando a margem da precificação
+    /**
+     * Método de calcular preço final usando a margem da precificação.
+     * A chamada para calcularCustoTotal foi ajustada para passar 'precificacao'.
+     */
     public BigDecimal calcularPrecoFinalDoProduto(ProdutoEntity produto, PrecificacaoEntity precificacao) {
 
         if (precificacao == null || precificacao.getMargemDesejada() == null) {
@@ -70,8 +86,8 @@ public class PrecificacaoService {
         BigDecimal margem = precificacao.getMargemDesejada()
                 .divide(BigDecimal.valueOf(100), 4, RoundingMode.HALF_UP);
 
-        // Calcula o custo total do produto
-        BigDecimal custoTotal = calcularCustoTotal(produto);
+        // Calcula o custo total do produto (chamada corrigida)
+        BigDecimal custoTotal = calcularCustoTotal(produto, precificacao);
 
         // Fórmula: Preço Final = custoTotal / (1 - margem)
         BigDecimal divisor = BigDecimal.ONE.subtract(margem);
@@ -79,5 +95,3 @@ public class PrecificacaoService {
         return custoTotal.divide(divisor, 2, RoundingMode.HALF_UP);
     }
 }
-
-

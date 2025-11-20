@@ -58,6 +58,7 @@ public class PrecificacaoService {
         );
     }
 
+    //formata a moeda em reais EX(recebe 5000, devolve R$ 5.000,00)
     private String format(BigDecimal valor) {
         NumberFormat nf = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
         return nf.format(valor);

@@ -26,10 +26,7 @@ public class ProdutoController {
 
         @PostMapping("/calcular")
         public ResponseEntity<PrecificacaoResponseDTO> calcular(@RequestBody PrecificacaoRequestDTO request) {
-
             PrecificacaoResponseDTO resultado = precificacaoService.calcular(request);
-
-            // Aqui o Spring converte automaticamente o DTO em JSON
             return ResponseEntity.ok(resultado);
         }
     }

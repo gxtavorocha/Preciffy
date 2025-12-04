@@ -8,8 +8,12 @@ import java.util.List;
 public record PrecificacaoRequestDTO(
 
     ProdutoRequestDTO produto,
+
     CustosFixosRequestDTO custosFixos,
+
     @JsonInclude(JsonInclude.Include.NON_NULL)
     List<CustosManuaisRequestDTO> custosManuais,
+
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     BigDecimal margemDesejada
 ){}
